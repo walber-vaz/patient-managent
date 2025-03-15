@@ -34,18 +34,20 @@ public class Patient implements Serializable {
     private String address;
 
     @NotNull
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @NotNull
-    private LocalDate registerDate;
+    @Column(name = "registered_date")
+    private LocalDate registeredDate;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-
 
     public UUID getId() {
         return id;
@@ -87,12 +89,12 @@ public class Patient implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getRegisterDate() {
-        return registerDate;
+    public LocalDate getRegisteredDate() {
+        return registeredDate;
     }
 
-    public void setRegisterDate(@NotNull LocalDate registerDate) {
-        this.registerDate = registerDate;
+    public void setRegisteredDate(@NotNull LocalDate registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public LocalDateTime getCreatedAt() {
