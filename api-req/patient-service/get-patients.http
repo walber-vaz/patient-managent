@@ -1,4 +1,5 @@
 ### GET request to get all patients
+# ?page=0&size=10&orderBy=name&direction=asc
 GET http://localhost:4000/patients
 
 ###
