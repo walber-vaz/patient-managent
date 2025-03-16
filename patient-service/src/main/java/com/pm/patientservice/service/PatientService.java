@@ -6,6 +6,7 @@ import com.pm.patientservice.dto.PatientUpdateRequestDTO;
 import com.pm.patientservice.exceptions.EmailAlreadyExistsException;
 import com.pm.patientservice.exceptions.NoChangesDetectedException;
 import com.pm.patientservice.exceptions.PatientNotFoundException;
+import com.pm.patientservice.grpc.BillingServiceGrpcClient;
 import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.Patient;
 import com.pm.patientservice.repository.PatientRepository;
@@ -24,9 +25,11 @@ import java.util.UUID;
 @Service
 public class PatientService {
     private final PatientRepository patientRepository;
+    private final BillingServiceGrpcClient billingServiceGrpcClient;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient) {
         this.patientRepository = patientRepository;
+        this.billingServiceGrpcClient = billingServiceGrpcClient;
     }
 
     public List<PatientResponseDTO> getAllPatients(Integer page, Integer size, String orderBy, String direction) {
@@ -36,9 +39,7 @@ public class PatientService {
             orderBy = "createdAt";
         }
 
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ?
-                Sort.Direction.ASC :
-                Sort.Direction.DESC;
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         Sort sort = Sort.by(sortDirection, orderBy);
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -54,6 +55,7 @@ public class PatientService {
 
         Patient savedPatient = patientRepository.save(PatientMapper.toEntity(patientRequestDTO));
 
+        billingServiceGrpcClient.createBillingAccount(savedPatient.getId().toString(), savedPatient.getName(), savedPatient.getEmail());
 
         return PatientMapper.toDTO(savedPatient);
     }
