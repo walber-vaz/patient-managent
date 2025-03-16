@@ -7,6 +7,7 @@ import com.pm.patientservice.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,13 @@ public class PatientController {
 
     @GetMapping
     @Operation(summary = "Get all patients")
-    public ResponseEntity<List<PatientResponseDTO>> getPatients() {
-        return ResponseEntity.ok().body(patientService.getAllPatients());
+    public ResponseEntity<List<PatientResponseDTO>> getPatients(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "name") String orderBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return ResponseEntity.ok().body(patientService.getAllPatients(page, size, orderBy, direction));
     }
 
     @PostMapping
