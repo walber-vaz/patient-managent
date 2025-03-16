@@ -1,0 +1,9 @@
+### UPDATE PATIENT
+PATCH http://localhost:4000/patients/8ef12a82-ea25-4c67-9df5-af0fa307ea46
+Content-Type: application/json
+
+{
+    "email": "email2@email.com"
+}
+
+###
