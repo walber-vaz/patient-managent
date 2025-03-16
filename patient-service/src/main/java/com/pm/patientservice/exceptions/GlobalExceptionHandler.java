@@ -3,6 +3,7 @@ package com.pm.patientservice.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.batch.BatchTaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,5 +33,25 @@ public class GlobalExceptionHandler {
         errors.put("message", "Email already exists");
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(PatientNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePatientNotFoundException(PatientNotFoundException ex) {
+        log.warn("Patient not found: {}", ex.getMessage());
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Patient not found");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
+    }
+
+    @ExceptionHandler(NoChangesDetectedException.class)
+    public ResponseEntity<Map<String, String>> handleNoChangesDetectedException(NoChangesDetectedException ex) {
+        log.warn("No changes detected: {}", ex.getMessage());
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "No changes detected");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
